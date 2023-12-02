@@ -1,5 +1,5 @@
 import {describe, expect, test} from '@jest/globals';
-import {CalibrationParser} from '../day01';
+import {CalibrationParser, ReplacementCalibrationParser, AsyncCalibrationParser} from '../day01';
 
 describe('day01', () => {
     let input = `1abc2
@@ -27,6 +27,16 @@ treb7uchet`;
 
     test('Parser should get sum of calibration values', () => {
         expect(parser.getSumOfCalibrationValues()).toBe(142);
+    });
+
+    test('ReplacementCalibrationParser should get sum of calibration values', () => {
+        let rp = new ReplacementCalibrationParser(input);
+        expect(rp.getSumOfCalibrationValues()).toBe(142);
+    });
+
+    test('AsyncCalibrationParser should get sum of calibration values', async () => {
+        let rp = new AsyncCalibrationParser(input);
+        expect(await rp.getSumOfCalibrationValues()).toBe(142);
     });
 
 });
@@ -66,6 +76,16 @@ zoneight234
 
     test('Parser should get sum of calibration values', () => {
         expect(parser.getSumOfCalibrationValues()).toBe(281);
+    });
+
+    test('ReplacementCalibrationParser should get sum of calibration values', () => {
+        let rp = new ReplacementCalibrationParser(input);
+        expect(rp.getSumOfCalibrationValues()).toBe(281);
+    });
+
+    test('AsyncCalibrationParser should get sum of calibration values', async () => {
+        let rp = new AsyncCalibrationParser(input);
+        expect(await rp.getSumOfCalibrationValues()).toBe(281);
     });
 
 });
