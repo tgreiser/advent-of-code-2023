@@ -10,9 +10,47 @@ export class Hand {
         this.score = this.getScore();
     }
 
+    cardScore(): string {
+        return this.cards            
+            .replace(/A/g, 'E')
+            .replace(/T/g, 'A')
+            .replace(/J/g, 'B')
+            .replace(/Q/g, 'C')
+            .replace(/K/g, 'D')
+            ;
+    }
+
     getScore(): number {
-        // for each card, count the number of cards with the same value, then sort by the count descending
-        let counts = this.cards.split('').map(x => this.cards.split('').filter(y => y === x).length).sort((a, b) => b - a);
+        let remaining = this.cards.length;
+        let score = 0;
+        let cards = this.cards;
+        let counts: number[] = [];
+
+        while (remaining > 0) {
+            counts.push( cards.split('').filter(x => x === cards[0]).length );
+            cards = cards.replace(new RegExp(cards[0], 'g'), '');
+            remaining -= counts[counts.length - 1];
+        }
+        counts = counts.sort((a, b) => b - a);
+        if (counts.length === 1 && counts[0] === 5) {
+            score = 7;
+        } else if (counts.length === 2 && counts[0] === 4) {
+            score = 6;
+        } else if (counts.length === 2 && counts[0] === 3) {
+            score = 5;
+        } else if (counts.length === 3 && counts[0] === 3) {
+            score = 4;
+        } else if (counts.length === 3 && counts[0] === 2) {
+            score = 3;
+        } else if (counts.length === 4 && counts[0] === 2) {
+            score = 2;
+        } else {
+            score = 1;
+        }
+        return score;
+    }
+
+    getScoreLegacy(): number {
 
         if (this.isFiveOfAKind()) {
             return 7;
@@ -108,13 +146,15 @@ export class Day07 {
             return -1;
         }
         if (hand1.score == hand2.score) {
-            for (let iX = 0; iX < hand1.cards.length; iX++) {
-                if (hand1.scoreCard(hand1.cards[iX]) > hand2.scoreCard(hand2.cards[iX])) {
-                    return 1;
-                }
-                if (hand1.scoreCard(hand1.cards[iX]) < hand2.scoreCard(hand2.cards[iX])) {
-                    return -1;
-                }
+            
+            let card1 = hand1.cardScore();
+            let card2 = hand2.cardScore();
+            console.log(`Same score: ${hand1.cards} > ${hand2.cards} -- ${card1} > ${card2} ${card1 > card2}`);
+            if (card1 > card2) {
+                return 1;
+            }
+            if (card1 < card2) {
+                return -1;
             }
         }
         return 0;
