@@ -93,7 +93,13 @@ export class GlassBeadGame {
     }
 }
 
+let fs = require('fs');
+let path = __dirname + '/../__data__/day02.txt';
+if (!fs.existsSync(path)) {
+    path = __dirname + '/__data__/day02.txt';
+}
+
 let game = new GlassBeadGame({ red: 12, green: 13, blue: 14 });
-let input = game.parseGames(require('fs').readFileSync(__dirname + '/../__data__/day02.txt', 'utf-8'));
+let input = game.parseGames(require('fs').readFileSync(path, 'utf-8'));
 
 console.log(game.getMinimumBeadPowerSum(input));

@@ -150,7 +150,12 @@ export class ReplacementCalibrationParser {
 }
 
 // read from __data__/day01.txt
-let input = require('fs').readFileSync(__dirname + '/../__data__/day01.txt', 'utf-8');
+let fs = require('fs');
+let path = __dirname + '/../__data__/day01.txt';
+if (!fs.existsSync(path)) {
+    path = __dirname + '/__data__/day01.txt';
+}
+let input = fs.readFileSync(path, 'utf-8');
 
 let p = new CalibrationParser(input);
 console.log(p.getSumOfCalibrationValues());
