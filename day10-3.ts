@@ -171,35 +171,29 @@ export class Day10Part2 {
         return this.loop[0];
     }
 
-    whatQuadrant(current: Point): Point {
-        return {x: (current.x < this.width / 2 ? -1 : 1),
-            y: (current.y < this.height / 2 ? -1 : 1),
-            animal: 0};
-    }
-
-    cornerCrossing(current: Point, quadrant: Point): boolean {
-        let ch = this.getPoint(current);
-        if ((quadrant.x == 1 && quadrant.y == 1) || (quadrant.x == -1 && quadrant.y == -1)) {
-            return ['L', '7'].includes(ch);
-        } else if ((quadrant.x == 1 && quadrant.y == -1) || (quadrant.x == -1 && quadrant.y == 1)) {
-            return ['F', 'J'].includes(ch);
-        } 
-        return false;
-    }
-
-    countCrossings(current: Point): number {
-        // move in a diagonal direction and count how many times we cross the loop
-        let count = 0;
-        let quadrant = this.whatQuadrant(current);
-
-        while (current.x >= 0 && current.x < this.width && current.y >= 0 && current.y < this.height) {
-            if (this.inLoop(current) && !this.cornerCrossing(current, quadrant)) {
-                count++;
+    rayCast(p: Point): number {
+        let intersections = 0;
+        let x = p.x;
+        let y = p.y;
+        for (let iK = 0; iK < this.loop.length - 1; iK++) {
+            let x1 = this.loop[iK].x;
+            let y1 = this.loop[iK].y;
+            let x2 = this.loop[iK + 1].x;
+            let y2 = this.loop[iK + 1].y;
+            if (y1 == 0 && y2 == 0) {
+                let isOnSideX = x >= Math.min(x1, x2) && x <= Math.max(x1, x2);
             }
-            current.x += quadrant.x;
-            current.y += quadrant.y;
+            let isOnSide = y == y1 && y == y2;
+
+            if (!isOnSide && (y1 > y) != (y2 > y) && x < (x2 - x1) * (y - y1) / (y2 - y1) + x1) {
+                if (x == 0 && y == 0) {
+                    let ok = false;
+                }
+                intersections++;
+            }
         }
-        return count;
+
+        return intersections;
     }
 
     // How many points are completely enclosed by the loop?
@@ -212,7 +206,7 @@ export class Day10Part2 {
                 if (this.inLoop(pt)) {
                     continue;
                 }
-                let isEnclosed = this.countCrossings(pt) % 2 == 1;
+                let isEnclosed = this.rayCast(pt) % 2 == 1;
                 if (isEnclosed) {
                     result.push(pt);
                 }
@@ -245,8 +239,8 @@ export class Day10Part2 {
                 if (this.inLoop(pt)) {
                     line += 'x'; //this.getPoint(pt);
                 } else {
-                    line += this.countCrossings(pt)
-                    if (line == '0') { line = '.'; }
+                    let ch = this.rayCast(pt);
+                    line += ch % 2 == 1 ? 'I' : '.';
                 }
             }
             console.log(line);
